@@ -39,3 +39,54 @@ def init_db_command():
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    
+#------------------------- User functions ---------------------------------
+
+def fetch_all():
+    """ Fetch rows and convert to list """
+    db = get_db()
+    result = db.execute(
+        'SELECT id, title, body from todos'
+    ).fetchall()
+    
+    rows = [dict(row) for row in result]
+    
+    return rows
+
+def fetch_one(id):
+    """ fetch single row """
+    db = get_db()
+    cursor=db.cursor()
+    result = cursor.execute(
+        'SELECT id, title, body from todos where id = ?',
+         ( id, )
+    ).fetchall()
+    rows = [dict(row) for row in result]
+    
+    return rows
+
+def update_one(id, title, body):
+    """ Update record by id"""
+    
+    db = get_db()
+    cursor=db.cursor()
+    result = cursor.execute(
+        'UPDATE todos SET title = ?, body = ? where id = ?',
+         ( title, body, id, )
+    )
+    db.commit()
+    
+    return None
+
+def delete_one(id):
+    """ Update record by id"""
+    
+    db = get_db()
+    cursor=db.cursor()
+    result = cursor.execute(
+        'DELETE from todos where id = ?',
+         (id, )
+    )
+    db.commit()
+    
+    return None

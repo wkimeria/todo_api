@@ -6,7 +6,7 @@ from flask import (
 )
 
 
-from todo.db import get_db
+from todo.db import *
 
 bp = Blueprint('todos', __name__, url_prefix='/todos')
 app = Flask(__name__)
@@ -31,7 +31,7 @@ def process():
         id = data['id'] # Required
         
         # Fetch record
-        record = _fetch_one(id)
+        record = fetch_one(id)
         
         if len(record) == 0:
             response = app.response_class(
@@ -41,7 +41,7 @@ def process():
             )
             return response
         
-        _delete_one(id)
+        delete_one(id)
         
         id_data = {"id": id}
 
@@ -71,7 +71,7 @@ def process():
         body = data.get('body')
         
         # Fetch record
-        record = _fetch_one(id)
+        record = fetch_one(id)
         app.logger.error('RECORD'+ str(len(record)))
         
         if len(record) == 0:
@@ -82,7 +82,7 @@ def process():
             )
             return response
         
-        _update_one(id, title, body)
+        update_one(id, title, body)
         
         id_data = {"id": record[0].get('id')}
         
@@ -132,7 +132,7 @@ def process():
     
     if request.method == 'GET':
         # Get all rows
-        rows = _fetch_all()
+        rows = fetch_all()
         
         # Return as JSON
         response = app.response_class(
@@ -143,57 +143,7 @@ def process():
         return response
     
 
-def _fetch_all():
-    """ Fetch rows and convert to list """
-    db = get_db()
-    result = db.execute(
-        'SELECT id, title, body from todos'
-    ).fetchall()
-    
-    rows = [dict(row) for row in result]
-    
-    return rows
 
-def _fetch_one(id):
-    """ fetch single row """
-    db = get_db()
-    cursor=db.cursor()
-    result = cursor.execute(
-        'SELECT id, title, body from todos where id = ?',
-         ( id, )
-    ).fetchall()
-    
-    rows = [dict(row) for row in result]
-    
-    return rows
-
-def _update_one(id, title, body):
-    """ Update record by id"""
-    
-    db = get_db()
-    cursor=db.cursor()
-    result = cursor.execute(
-        'UPDATE todos SET title = ?, body = ? where id = ?',
-         ( title, body, id, )
-    )
-    
-    db.commit()
-    
-    return None
-
-def _delete_one(id):
-    """ Update record by id"""
-    
-    db = get_db()
-    cursor=db.cursor()
-    result = cursor.execute(
-        'DELETE from todos where id = ?',
-         (id, )
-    )
-    
-    db.commit()
-    
-    return None
     
     
 
