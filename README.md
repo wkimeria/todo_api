@@ -13,3 +13,14 @@ To initialize the database (sqlite3)
 ```
 flask init-db
 ```
+To install
+```
+pip install -e .
+```
+
+To test
+```
+pip install pytest
+
+pyest
+```
