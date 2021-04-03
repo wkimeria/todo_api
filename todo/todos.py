@@ -16,16 +16,16 @@ def process():
     
     if request.method == 'DELETE':
         
-        # the todo id will be in the JSON
-        try:
-            data = request.get_json()
-        except Exception as e: # work on python 3.x
-            app.logger.error('Unable to parse POST data'+ str(e))
+       # Data must be JSON
+        data = _ensure_json(request)
+        
+        if data is None:
             response = app.response_class(
                 response = '{"error":"Invalid input. Must be valid JSON"}',
                 status=400,
                 mimetype='application/json'
             )
+            
             return response
             
         id = data['id'] # Required
@@ -54,16 +54,16 @@ def process():
         return response
          
     if request.method == 'PUT':
-        # the todo id will be in the JSON
-        try:
-            data = request.get_json()
-        except Exception as e: # work on python 3.x
-            app.logger.error('Unable to parse POST data'+ str(e))
+        # Data must be JSON
+        data = _ensure_json(request)
+        
+        if data is None:
             response = app.response_class(
                 response = '{"error":"Invalid input. Must be valid JSON"}',
                 status=400,
                 mimetype='application/json'
             )
+            
             return response
             
         id = data['id'] # Required
@@ -98,15 +98,15 @@ def process():
     if request.method == 'POST':
        
         # Data must be JSON
-        try:
-            data = request.get_json()
-        except Exception as e: # work on python 3.x
-            app.logger.error('Unable to parse POST data'+ str(e))
+        data = _ensure_json(request)
+        
+        if data is None:
             response = app.response_class(
                 response = '{"error":"Invalid input. Must be valid JSON"}',
                 status=400,
                 mimetype='application/json'
             )
+            
             return response
             
         title = data['title']
@@ -141,6 +141,25 @@ def process():
             mimetype='application/json'
         )
         return response
+    
+    
+def _ensure_json(request):
+    # Data must be JSON
+    try:
+    
+        data = request.get_json()
+        app.logger.error(data)
+        if data is None:
+            return None
+           
+        #return data
+        return data
+    except Exception as e: # work on python 3.x
+        app.logger.error('Unable to parse json data'+ str(e))
+        return None
+        
+        
+        
     
 
 
