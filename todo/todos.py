@@ -72,7 +72,6 @@ def process():
         
         # Fetch record
         record = fetch_one(id)
-        app.logger.error('RECORD'+ str(len(record)))
         
         if len(record) == 0:
             response = app.response_class(
@@ -148,7 +147,6 @@ def _ensure_json(request):
     try:
     
         data = request.get_json()
-        app.logger.error(data)
         if data is None:
             return None
            
