@@ -27,13 +27,13 @@ def test_empty_db(client):
     assert rv.status_code == 200
     assert rv.data == b'[]'
     
-def test_post(client):
+def test_create(client):
     """ Test inserting a single todo"""
     rv = client.post('/todos', json={"title": "GodZilla", "body": "Rain destruction on random city"})
     assert rv.status_code == 201
     assert rv.data == b'{"id": 1}'
 
-def test_put(client):
+def test_update(client):
     """ Test updating a todo"""
      
     #Insert

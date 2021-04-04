@@ -7,6 +7,7 @@ from flask import (
 
 
 from todo.db import *
+from . import utils
 
 bp = Blueprint('todos', __name__, url_prefix='/todos')
 app = Flask(__name__)
@@ -17,7 +18,7 @@ def process():
     if request.method == 'DELETE':
         
        # Data must be JSON
-        data = _ensure_json(request)
+        data = utils.ensure_json(request)
         
         if data is None:
             response = app.response_class(
@@ -55,7 +56,7 @@ def process():
          
     if request.method == 'PUT':
         # Data must be JSON
-        data = _ensure_json(request)
+        data = utils.ensure_json(request)
         
         if data is None:
             response = app.response_class(
@@ -97,7 +98,7 @@ def process():
     if request.method == 'POST':
        
         # Data must be JSON
-        data = _ensure_json(request)
+        data = utils.ensure_json(request)
         
         if data is None:
             response = app.response_class(
@@ -140,22 +141,7 @@ def process():
             mimetype='application/json'
         )
         return response
-    
-    
-def _ensure_json(request):
-    # Data must be JSON
-    try:
-    
-        data = request.get_json()
-        if data is None:
-            return None
-           
-        #return data
-        return data
-    except Exception as e: # work on python 3.x
-        app.logger.error('Unable to parse json data'+ str(e))
-        return None
-        
+
         
         
     
